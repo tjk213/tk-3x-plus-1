@@ -10,21 +10,22 @@ DESCRIPTION="Brute-force verify the Collatz Conjecture over the given data range
 
 def three_x_plus_one(x: int, visited: set, maxval : int = 0, steps: int = 0) -> Dict:
 
-    if x in visited:
-        return {'verified': False, 'maxval': maxval, 'steps': steps}
-    visited.add(x)
+    while True:
+        if x in visited:
+            return {'verified': False, 'maxval': maxval, 'steps': steps}
+        visited.add(x)
 
-    steps += 1
-    maxval = max(maxval, x)
-
-    while (x % 2 == 0):
-        x = x // 2
         steps += 1
+        maxval = max(maxval, x)
+        while (x % 2 == 0):
+            x = x // 2
+            steps += 1
 
-    if x == 1:
-        return {'verified': True, 'maxval': maxval, 'steps': steps}
-    else:
-        return three_x_plus_one(3*x+1, visited, maxval, steps)
+        if x == 1:
+            break
+        x = 3*x+1
+
+    return {'verified': True, 'maxval': maxval, 'steps': steps}
 
 
 def main():
