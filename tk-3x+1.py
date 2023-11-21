@@ -17,10 +17,12 @@ def three_x_plus_one(x: int, visited: set, maxval : int = 0, steps: int = 0) -> 
     steps += 1
     maxval = max(maxval, x)
 
+    while (x % 2 == 0):
+        x = x // 2
+        steps += 1
+
     if x == 1:
         return {'verified': True, 'maxval': maxval, 'steps': steps}
-    elif x % 2 == 0:
-        return three_x_plus_one(x//2, visited, maxval, steps)
     else:
         return three_x_plus_one(3*x+1, visited, maxval, steps)
 
