@@ -81,7 +81,6 @@ def main():
     else:
         steps = dict()
 
-    overflows = set()
     N = stop - start
 
     tstart = time()
@@ -92,8 +91,6 @@ def main():
             print(f"x = {i}")
             raise RuntimeError("Counter found!")
 
-        if res['maxval'] >= 2**32:
-            overflows.add(i)
         steps[i] = res['steps']
     tend = time()
 
@@ -104,7 +101,6 @@ def main():
             for p in pairs:
                 print(f"{p[0]}, {p[1]}", file=f)
 
-    perc = len(overflows) / N * 100
     total_steps = sum(steps.values())
     avg_steps = total_steps / N
     max_steps = max(steps.values())
@@ -112,7 +108,6 @@ def main():
 
     #print(f'Collatz Conjecture Confirmed.')
     #print(f'\n')
-    print(f'Overflows: {len(overflows):6,.2f} ({perc:.3f}%)')
     print(f'Avg Steps: {avg_steps:6,.2f}')
     print(f'Max Steps: {max_steps:6,.2f}')
     print(f'\n')
