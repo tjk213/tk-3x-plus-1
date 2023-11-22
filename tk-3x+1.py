@@ -66,7 +66,16 @@ def main():
     stop = 2*args.start if not args.stop else args.stop
     start = args.start if args.start % 2 == 1 else args.start+1
 
-    steps = dict()
+    if args.step_map_in:
+        with open(args.step_map_in, 'r') as f:
+            header_in = f.readline()
+            steps = {int(line.split(',')[0]): int(line.split(',')[1]) for line in f}
+        lower_bound = max(steps.keys())
+        for i in range(1, lower_bound, 2):
+            assert i in steps.keys(), f"Error: Invalid step-map: missing index {i}"
+        assert start == lower_bound+2, "Error: Unexpected start value"
+    else:
+        steps = dict()
 
     overflows = set()
 
