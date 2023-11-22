@@ -43,14 +43,14 @@ def main():
                             formatter_class=lambda prog: RTHF(prog, max_help_position=80))
 
     range_parser = parser.add_argument_group(
-        title="Test Range Options",
-        description="\nThese options control the data range over which the Conjecture will be verified.\n"
-        "The start and end points are, respectively, inclusive and exclusive:\n"
-        "\n"
+        title="Test Range Options", description="\n"
+        "These options control the data range over which the Conjecture will be verified.\n"
+        "The start and end points are, respectively, inclusive and exclusive:\n\n"
         "    VerifyCollatzConjecture(i) ∀ i ∈ [start, stop)\n"
     )
-    range_parser.add_argument("--start", type=int, metavar="<int>", required=True, help="Starting index.")
-    range_parser.add_argument("--stop", type=int, metavar="<int>", default=None, help="Ending index. [Default: 2*start]")
+    int_arg = {"type": int, "metavar": "<int>"}
+    range_parser.add_argument("--start", **int_arg, required=True, help="Starting index.")
+    range_parser.add_argument("--stop",  **int_arg, help="Ending index. [Default: 2*start]")
 
     step_map_parser = parser.add_argument_group(
         title="Step Map Options", description="\n"
@@ -59,8 +59,10 @@ def main():
         "the results from a prior run, which can, in some cases, lead to significant speedups.\n"
         "Step maps are saved in CSV format."
     )
-    step_map_parser.add_argument("--step-map-in", type=str, metavar="/path/to/step/map", help="Load given step map.")
-    step_map_parser.add_argument("--step-map-out",type=str, metavar="/path/to/step/map", help="Save results as step map.")
+
+    path_var = {"type": str, "metavar": "/path/to/step/map"}
+    step_map_parser.add_argument("--step-map-in",  **path_var, help="Load given step map.")
+    step_map_parser.add_argument("--step-map-out", **path_var, help="Save results as step map.")
 
     args = parser.parse_args()
     stop = 2*args.start if not args.stop else args.stop
@@ -78,7 +80,6 @@ def main():
         steps = dict()
 
     overflows = set()
-
     N = len(range(start, stop))
 
     tstart = time()
