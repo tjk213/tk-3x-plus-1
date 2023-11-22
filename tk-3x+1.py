@@ -8,7 +8,9 @@ from typing import Dict
 
 DESCRIPTION="Brute-force verify the Collatz Conjecture over the given data range."
 
-def three_x_plus_one(x: int, step_map: dict[int,int] = None, lower_bound: int = None) -> Dict:
+def three_x_plus_one(x: int,
+                     step_map: dict[int,int] = None,
+                     lower_bound: int = None) -> Dict:
 
     steps = 0
     maxval = x
@@ -80,7 +82,7 @@ def main():
         steps = dict()
 
     overflows = set()
-    N = len(range(start, stop))
+    N = stop - start
 
     tstart = time()
     for i in range(start, stop, 2):
