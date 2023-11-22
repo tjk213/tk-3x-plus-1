@@ -22,12 +22,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 #include <chrono>
 #include <string>
 
 #include "llvm/ADT/DenseMap.h"
-#include <llvm/ADT/SmallSet.h>
 
 using StepResTy = std::pair<int64_t,uint64_t>;
 using StepMapTy = llvm::DenseMap<uint64_t,StepResTy>;
@@ -39,16 +37,10 @@ static StepResTy three_x_plus_one(uint64_t x,
                                   uint64_t lower_bound)
 {
   unsigned steps = 0;
-  llvm::SmallSet<uint64_t,32> visited;
   uint64_t maxval = x;
 
-  while (true)
+  for (unsigned i=0; i < 100'000; ++i)
   {
-    if (visited.count(x)) {
-      return std::make_pair(-1,maxval);
-    }
-    visited.insert(x);
-
     unsigned zeros = __builtin_ctz(x);
     steps += zeros;
     x = x >> zeros;
@@ -67,7 +59,7 @@ static StepResTy three_x_plus_one(uint64_t x,
     maxval = std::max(maxval, x);
   }
 
-  llvm_unreachable("Broke out of loop without returning?");
+  return std::make_pair(-steps, maxval);
 }
 
 int main(int argc, char** argv)
@@ -104,8 +96,7 @@ int main(int argc, char** argv)
   {
     auto res = three_x_plus_one(i, StepMap, i);
     if (res.first < 0) {
-      fprintf(stderr, "COUNTER FOUND: %llu", i);
-      exit(-1);
+      fprintf(stderr, "CANDIDATE FOUND: idx=%llu - steps=%lld - peak=%lld", i, res.first, res.second);
     }
     StepMap[i] = res;
   }
