@@ -70,19 +70,22 @@ def main():
     stop = 2*args.start if not args.stop else args.stop
     start = args.start if args.start % 2 == 1 else args.start+1
 
+    steps = dict()
+    peaks = dict()
+
     if args.step_map_in:
         with open(args.step_map_in, 'r') as f:
             header_in = f.readline()
-            steps = {int(line.split(',')[0]): int(line.split(',')[1]) for line in f}
+            for line in f:
+                idx, s, p = map(int, line.split(','))
+                steps[idx] = s
+                peaks[idx] = p
         lower_bound = max(steps.keys())
         for i in range(1, lower_bound, 2):
             assert i in steps.keys(), f"Error: Invalid step-map: missing index {i}"
         assert start == lower_bound+2, "Error: Unexpected start value"
-    else:
-        steps = dict()
 
     N = stop - start
-
     tstart = time()
     for i in range(start, stop, 2):
         res = three_x_plus_one(i, steps, i)
@@ -92,14 +95,15 @@ def main():
             raise RuntimeError("Counter found!")
 
         steps[i] = res['steps']
+        peaks[i] = res['maxval']
     tend = time()
 
     if args.step_map_out:
         with open(args.step_map_out, 'w') as f:
-            print("index, steps", file=f)
+            print("index, steps, peak", file=f)
             pairs = list(sorted(steps.items()))
             for p in pairs:
-                print(f"{p[0]}, {p[1]}", file=f)
+                print(f"{p[0]}, {p[1]}, {peaks[p[0]]}", file=f)
 
     total_steps = sum(steps.values())
     avg_steps = total_steps / N
