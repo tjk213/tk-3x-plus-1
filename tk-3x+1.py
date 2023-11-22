@@ -8,10 +8,11 @@ from typing import Dict
 
 DESCRIPTION="Brute-force verify the Collatz Conjecture over the given data range."
 
-def three_x_plus_one(x: int, visited: set) -> Dict:
+def three_x_plus_one(x: int) -> Dict:
 
     steps = 0
     maxval = x
+    visited = set()
 
     while True:
         if x in visited:
@@ -60,20 +61,18 @@ def main():
     stop = 2*args.start if not args.stop else args.stop
     start = args.start if args.start % 2 == 1 else args.start+1
 
-    visited = set()
+    steps = dict()
+
     overflows = set()
 
-    steps = dict()
     N = len(range(start, stop))
 
     tstart = time()
     for i in range(start, stop, 2):
-        visited.clear()
-        res = three_x_plus_one(i, visited)
+        res = three_x_plus_one(i)
 
         if res['verified'] == False:
             print(f"x = {i}")
-            print(f"visited = {visited}")
             raise RuntimeError("Counter found!")
 
         if res['maxval'] >= 2**32:
