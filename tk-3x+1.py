@@ -8,7 +8,10 @@ from typing import Dict
 
 DESCRIPTION="Brute-force verify the Collatz Conjecture over the given data range."
 
-def three_x_plus_one(x: int, visited: set, maxval : int = 1, steps: int = 0) -> Dict:
+def three_x_plus_one(x: int, visited: set) -> Dict:
+
+    steps = 0
+    maxval = x
 
     while True:
         if x in visited:
