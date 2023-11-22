@@ -34,8 +34,8 @@ def three_x_plus_one(x: int,
             return {'verified': True, 'maxval': maxval, 'steps': steps}
 
         steps += 1
-        maxval = max(maxval, x)
         x = 3*x+1
+        maxval = max(maxval, x)
 
     return {'verified': True, 'maxval': maxval, 'steps': steps}
 
