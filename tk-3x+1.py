@@ -27,14 +27,14 @@ from typing import Dict
 
 DESCRIPTION="Brute-force verify the Collatz Conjecture over the given data range."
 
-def three_x_plus_one(x: int) -> Dict:
+def three_x_plus_one(x: int):
 
     k = 0
     x_k = x
     sup = x
 
     if x == 1:
-        return {'verified': True, 'stoptime': inf, 'supremum': 4}
+        return inf, 4
 
     while True:
         while (x_k % 2 == 0):
@@ -42,9 +42,8 @@ def three_x_plus_one(x: int) -> Dict:
             x_k = x_k // 2
 
             if x_k <= x:
-                cycle_found = (x_k == x)
-                stoptime = inf if cycle_found else k
-                return {'verified': not cycle_found, 'stoptime': stoptime, 'supremum': sup}
+                stoptime = inf if x_k == x else k
+                return stoptime, sup
 
         k += 1
         x_k = 3*x_k + 1
@@ -77,19 +76,13 @@ def main():
     start = args.start if args.start % 2 == 1 else args.start+1
 
     stoptimes = dict()
-    supremums = dict()
-
     N = stop - start
     tstart = time()
     for i in range(start, stop, 2):
-        res = three_x_plus_one(i)
+        stoptimes[i] = three_x_plus_one(i)
 
-        if res['verified'] == False:
-            print(f"x = {i}")
-            raise RuntimeError("Counter found!")
-
-        stoptimes[i] = res['stoptime']
-        supremums[i] = res['supremum']
+        if i != 1 and stoptimes[i][0] == inf:
+            print(f"COUNTER FOUND: x = {i}", file=sys.stderr)
     tend = time()
 
     if args.output:
@@ -97,13 +90,13 @@ def main():
             print("n, stopping_time, supremum", file=f)
             pairs = list(sorted(stoptimes.items()))
             for p in pairs:
-                print(f"{p[0]}, {p[1]}, {supremums[p[0]]}", file=f)
+                print(f"{p[0]}, {p[1][0]}, {p[1][1]}", file=f)
 
     if 1 in stoptimes.keys():
         del stoptimes[1]
 
-    avg_stopping_time = sum(stoptimes.values()) / N
-    max_stopping_time = max(stoptimes.values())
+    avg_stopping_time = sum([x[0] for x in stoptimes.values()]) / N
+    max_stopping_time = max([x[0] for x in stoptimes.values()])
     checks_per_second = N / (tend - tstart)
 
     print(f'Avg Stopping Time: {avg_stopping_time:6,.2f}')
