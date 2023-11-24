@@ -34,7 +34,7 @@ def three_x_plus_one(x: int):
     sup = x
 
     if x == 1:
-        return inf, 4
+        return inf, 1, 4
 
     while True:
         while (x_k % 2 == 0):
@@ -43,7 +43,7 @@ def three_x_plus_one(x: int):
 
             if x_k <= x:
                 stoptime = inf if x_k == x else k
-                return stoptime, sup
+                return stoptime, x_k, sup
 
         k += 1
         x_k = 3*x_k + 1
@@ -87,10 +87,10 @@ def main():
 
     if args.output:
         with open(args.output, 'w') as f:
-            print("n, stopping_time, supremum", file=f)
+            print("n, stopping_time, kth_iterate, supremum", file=f)
             pairs = list(sorted(stoptimes.items()))
             for p in pairs:
-                print(f"{p[0]}, {p[1][0]}, {p[1][1]}", file=f)
+                print(f"{p[0]}, {p[1][0]}, {p[1][1]}, {p[1][2]}", file=f)
 
     if 1 in stoptimes.keys():
         del stoptimes[1]
