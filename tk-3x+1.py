@@ -84,10 +84,10 @@ def main():
     range_parser.add_argument("--start", **int_arg, required=True, help="Starting index.")
     range_parser.add_argument("--stop",  **int_arg, help="Ending index. [Default: 2*start]")
 
-    output_parser = parser.add_argument_group(title="Output Options")
+    output_parser = parser.add_argument_group(title="Output Options", description="")
     path_var = {"type": str, "metavar": "/path/to/file"}
     output_parser.add_argument("--output", "-o",  **path_var,
-                               help="Save results to disk, in CSV format. [Default: None]")
+                               help="Save results to disk, in CSV format.\nDefault: None")
 
     args = parser.parse_args()
     stop = 2*args.start if not args.stop else args.stop
