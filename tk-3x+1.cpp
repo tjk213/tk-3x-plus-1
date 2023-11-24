@@ -39,15 +39,15 @@ static StepResTy three_x_plus_one(uint64_t x,
   unsigned steps = 0;
   uint64_t maxval = x;
 
+  if (x == 1) {
+    return std::make_pair(steps, maxval);
+  }
+
   for (unsigned i=0; i < 100'000; ++i)
   {
     unsigned zeros = __builtin_ctz(x);
     steps += zeros;
     x = x >> zeros;
-
-    if (x == 1) {
-      return std::make_pair(steps, maxval);
-    }
 
     if (x < lower_bound) {
       auto prev = step_map.lookup(x);
