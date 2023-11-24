@@ -34,7 +34,7 @@ def three_x_plus_one(x: int):
     sup = x
 
     if x == 1:
-        return inf, 1, 4
+        return inf, 1, 2
 
     while True:
         while (x_k % 2 == 0):
@@ -46,7 +46,7 @@ def three_x_plus_one(x: int):
                 return stoptime, x_k, sup
 
         k += 1
-        x_k = 3*x_k + 1
+        x_k = (3*x_k + 1) // 2
         sup = max(sup, x_k)
 
     return
