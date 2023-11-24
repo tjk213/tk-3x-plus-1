@@ -21,6 +21,7 @@
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter as RTHF
 
+from copy import deepcopy
 from math import inf
 from time import time
 from typing import Dict
@@ -77,12 +78,19 @@ def main():
     range_parser = parser.add_argument_group(
         title="Test Range Options", description="\n"
         "These options control the data range over which the Conjecture will be verified.\n"
-        "The start and end points are, respectively, inclusive and exclusive:\n\n"
-        "    VerifyCollatzConjecture(i) ∀ i ∈ [start, stop)\n"
+        "The start and end points are, respectively, inclusive and exclusive.\n"
+        "The --skip-modulus option controls how many indices within the given range are\n"
+        "skipped due to their having known-finite stopping times. E.g., --skip-modulus=2\n"
+        "will skip all even numbers, since it is known that all even numbers have a stopping\n"
+        "time of one. --skip-modulus=4 will skip all i such that i % 4 = 0, 1, or 2.\n\n"
+        "    VerifyCollatzConjecture(i) ∀ i ∈ {range(start, stop)} - {known-finite(skip-modulus)}\n"
     )
     int_arg = {"type": int, "metavar": "<int>"}
     range_parser.add_argument("--start", **int_arg, required=True, help="Starting index.")
     range_parser.add_argument("--stop",  **int_arg, help="Ending index. [Default: 2*start]")
+    range_parser.add_argument("--skip-modulus", **int_arg, default=256, help=
+                              "Skip known-finite indices up to given modulus.\n"
+                              "Default: 256")
 
     output_parser = parser.add_argument_group(title="Output Options", description="")
     path_var = {"type": str, "metavar": "/path/to/file"}
@@ -95,7 +103,24 @@ def main():
 
     results = dict()
     vals_all =  list(range(start, stop))
-    vals_to_check = vals_all[0::2]
+    vals_to_check = deepcopy(vals_all)
+
+    if args.skip_modulus not in (1,2,4,8,16,32,64,128,256):
+        raise ValueError(f"Invalid modulus: {args.skip_modulus}")
+
+    if args.skip_modulus >= 2:
+        vals_to_check = list(filter(lambda x: x % 2 != 0, vals_to_check))
+    if args.skip_modulus >= 4:
+        vals_to_check = list(filter(lambda x: x % 4 != 1, vals_to_check))
+    if args.skip_modulus >= 16:
+        vals_to_check = list(filter(lambda x: x % 16 != 3, vals_to_check))
+    if args.skip_modulus >= 32:
+        vals_to_check = list(filter(lambda x: x % 32 not in (11, 23), vals_to_check))
+    if args.skip_modulus >= 128:
+        vals_to_check = list(filter(lambda x: x % 128 not in (7, 15, 59), vals_to_check))
+    if args.skip_modulus >= 256:
+        vals_to_check = list(filter(lambda x: x % 256 not in (39, 79, 95, 123, 175, 199, 219), vals_to_check))
+
     tstart = time()
     for i in vals_to_check:
         results[i] = three_x_plus_one(i)
