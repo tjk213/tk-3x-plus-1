@@ -21,6 +21,7 @@
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter as RTHF
 
+from math import inf
 from time import time
 from typing import Dict
 
@@ -33,7 +34,7 @@ def three_x_plus_one(x: int) -> Dict:
     sup = x
 
     if x == 1:
-        return {'verified': True, 'stoptime': 'infinity', 'supremum': 4}
+        return {'verified': True, 'stoptime': inf, 'supremum': 4}
 
     while True:
         while (x_k % 2 == 0):
@@ -42,7 +43,7 @@ def three_x_plus_one(x: int) -> Dict:
 
             if x_k <= x:
                 cycle_found = (x_k == x)
-                stoptime = 'infinity' if cycle_found else k
+                stoptime = inf if cycle_found else k
                 return {'verified': not cycle_found, 'stoptime': stoptime, 'supremum': sup}
 
         k += 1
