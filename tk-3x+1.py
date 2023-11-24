@@ -72,17 +72,10 @@ def main():
     range_parser.add_argument("--start", **int_arg, required=True, help="Starting index.")
     range_parser.add_argument("--stop",  **int_arg, help="Ending index. [Default: 2*start]")
 
-    step_map_parser = parser.add_argument_group(
-        title="Step Map Options", description="\n"
-        "Step maps are a data structure that point from any index to the number of steps in\n"
-        "the conjecture verification. Step maps enable one CC verification run to build on\n"
-        "the results from a prior run, which can, in some cases, lead to significant speedups.\n"
-        "Step maps are saved in CSV format."
-    )
-
-    path_var = {"type": str, "metavar": "/path/to/step/map"}
-    step_map_parser.add_argument("--step-map-in",  **path_var, help="Load given step map.")
-    step_map_parser.add_argument("--step-map-out", **path_var, help="Save results as step map.")
+    output_parser = parser.add_argument_group(title="Output Options")
+    path_var = {"type": str, "metavar": "/path/to/file"}
+    output_parser.add_argument("--output", "-o",  **path_var,
+                               help="Save results to disk, in CSV format. [Default: None]")
 
     args = parser.parse_args()
     stop = 2*args.start if not args.stop else args.stop
@@ -90,18 +83,6 @@ def main():
 
     steps = dict()
     peaks = dict()
-
-    if args.step_map_in:
-        with open(args.step_map_in, 'r') as f:
-            header_in = f.readline()
-            for line in f:
-                idx, s, p = map(int, line.split(','))
-                steps[idx] = s
-                peaks[idx] = p
-        lower_bound = max(steps.keys())
-        for i in range(1, lower_bound, 2):
-            assert i in steps.keys(), f"Error: Invalid step-map: missing index {i}"
-        assert start == lower_bound+2, "Error: Unexpected start value"
 
     N = stop - start
     tstart = time()
@@ -116,8 +97,8 @@ def main():
         peaks[i] = res['maxval']
     tend = time()
 
-    if args.step_map_out:
-        with open(args.step_map_out, 'w') as f:
+    if args.output:
+        with open(args.output, 'w') as f:
             print("index, steps, peak", file=f)
             pairs = list(sorted(steps.items()))
             for p in pairs:
