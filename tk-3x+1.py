@@ -93,32 +93,32 @@ def main():
     stop = 2*args.start if not args.stop else args.stop
     start = args.start if args.start % 2 == 1 else args.start+1
 
-    stoptimes = dict()
+    results = dict()
     vals_all =  list(range(start, stop))
     vals_to_check = vals_all[0::2]
     tstart = time()
     for i in vals_to_check:
-        stoptimes[i] = three_x_plus_one(i)
+        results[i] = three_x_plus_one(i)
 
-        if i != 1 and stoptimes[i][0] == inf:
+        if i != 1 and results[i][0] == inf:
             print(f"COUNTER FOUND: x = {i}", file=sys.stderr)
     tend = time()
 
     if args.output:
         with open(args.output, 'w') as f:
             print("n, stopping_time, kth_iterate, supremum", file=f)
-            pairs = list(sorted(stoptimes.items()))
+            pairs = list(sorted(results.items()))
             for p in pairs:
                 print(f"{p[0]}, {p[1][0]}, {p[1][1]}, {p[1][2]}", file=f)
 
-    if 1 in stoptimes.keys():
-        del stoptimes[1]
+    stoptimes = [x[0] for x in results.values()]
+    stoptimes_excl_inf = list(filter(lambda x: x != inf, stoptimes))
 
     n_total = len(vals_all)
     n_checked = len(vals_to_check)
 
-    avg_stopping_time = sum([x[0] for x in stoptimes.values()]) / n_checked
-    max_stopping_time = max([x[0] for x in stoptimes.values()])
+    avg_stopping_time = sum(stoptimes_excl_inf) / n_checked
+    max_stopping_time = max(stoptimes_excl_inf)
 
     checks_per_second  = n_checked / (tend - tstart)
     indices_per_second = n_total / (tend - tstart)
