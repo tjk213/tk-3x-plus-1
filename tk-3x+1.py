@@ -98,17 +98,18 @@ def main():
             for p in pairs:
                 print(f"{p[0]}, {p[1]}, {supremums[p[0]]}", file=f)
 
+    if 1 in stoptimes.keys():
+        del stoptimes[1]
+
     avg_stopping_time = sum(stoptimes.values()) / N
     max_stopping_time = max(stoptimes.values())
     checks_per_second = N / (tend - tstart)
 
-    #print(f'Collatz Conjecture Confirmed.')
-    #print(f'\n')
     print(f'Avg Stopping Time: {avg_stopping_time:6,.2f}')
     print(f'Max Stopping Time: {max_stopping_time:6,.2f}')
-    print(f'\n')
+    print(f'')
     print(f'Checks Per Second: {checks_per_second:6,.0f}')
-    print(f'\n')
+    print(f'')
     return
 
 
