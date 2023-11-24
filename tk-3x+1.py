@@ -81,38 +81,37 @@ def main():
     stop = 2*args.start if not args.stop else args.stop
     start = args.start if args.start % 2 == 1 else args.start+1
 
-    steps = dict()
-    peaks = dict()
+    stoptimes = dict()
+    supremums = dict()
 
     N = stop - start
     tstart = time()
     for i in range(start, stop, 2):
-        res = three_x_plus_one(i, steps, i)
+        res = three_x_plus_one(i, stoptimes, i)
 
         if res['verified'] == False:
             print(f"x = {i}")
             raise RuntimeError("Counter found!")
 
-        steps[i] = res['steps']
-        peaks[i] = res['maxval']
+        stoptimes[i] = res['steps']
+        supremums[i] = res['maxval']
     tend = time()
 
     if args.output:
         with open(args.output, 'w') as f:
-            print("index, steps, peak", file=f)
-            pairs = list(sorted(steps.items()))
+            print("n, stopping_time, supremum", file=f)
+            pairs = list(sorted(stoptimes.items()))
             for p in pairs:
-                print(f"{p[0]}, {p[1]}, {peaks[p[0]]}", file=f)
+                print(f"{p[0]}, {p[1]}, {supremums[p[0]]}", file=f)
 
-    total_steps = sum(steps.values())
-    avg_steps = total_steps / N
-    max_steps = max(steps.values())
+    avg_stopping_time = sum(stoptimes.values()) / N
+    max_stopping_time = max(stoptimes.values())
     checks_per_second = N / (tend - tstart)
 
     #print(f'Collatz Conjecture Confirmed.')
     #print(f'\n')
-    print(f'Avg Steps: {avg_steps:6,.2f}')
-    print(f'Max Steps: {max_steps:6,.2f}')
+    print(f'Avg Stopping Time: {avg_stopping_time:6,.2f}')
+    print(f'Max Stopping Time: {max_stopping_time:6,.2f}')
     print(f'\n')
     print(f'Checks Per Second: {checks_per_second:6,.0f}')
     print(f'\n')
