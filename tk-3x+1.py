@@ -151,8 +151,8 @@ def main():
     print(f'Avg Stopping Time: {avg_stopping_time:6,.2f}')
     print(f'Max Stopping Time: {max_stopping_time:6,.2f}')
     print(f'')
-    print(f' Checks Per Second: { checks_per_second:6,.0f}')
-    print(f'Indices Per Second: {indices_per_second:6,.0f}')
+    print(f' Checks Per Second: { checks_per_second:10,.0f}')
+    print(f'Indices Per Second: {indices_per_second:10,.0f}')
     print(f'')
     return
 
