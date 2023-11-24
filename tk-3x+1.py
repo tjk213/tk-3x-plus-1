@@ -51,6 +51,24 @@ def three_x_plus_one(x: int):
 
     return
 
+def test_legarias_table1():
+    n1, r1 =        1, three_x_plus_one(1)
+    n2, r2 =        7, three_x_plus_one(7)
+    n3, r3 =       27, three_x_plus_one(27)
+    n4, r4 =  2**50-1, three_x_plus_one(2**50-1)
+    n5, r5 =  2**50+0, three_x_plus_one(2**50+0)
+    n6, r6 =  2**50+1, three_x_plus_one(2**50+1)
+    n7, r7 = 2**500-1, three_x_plus_one(2**500-1)
+    n8, r8 = 2**500+1, three_x_plus_one(2**500+1)
+
+    assert (r1[0], round(r1[-1]/n1, +0)) == (inf, 2)
+    assert (r2[0], round(r2[-1]/n2, +1)) == (7,  3.7)
+    assert (r3[0], round(r3[-1]/n3, +0)) == (59, 171)
+    assert (r4[0], round(r4[-1]/n4, -6)) == (143, 6.38E8)
+    assert (r5[0], round(r5[-1]/n5, +0)) == (1, 1)
+    assert (r6[0], round(r6[-1]/n6, +1)) == (2, 1.5)
+    assert (r7[0], round(r7[-1]/n7,-86)) == (1828, 1.11E88)
+    assert (r8[0], round(r8[-1]/n8, +1)) == (2, 1.5)
 
 def main():
     parser = ArgumentParser(description=DESCRIPTION,
