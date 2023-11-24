@@ -26,36 +26,30 @@ from typing import Dict
 
 DESCRIPTION="Brute-force verify the Collatz Conjecture over the given data range."
 
-def three_x_plus_one(x: int,
-                     step_map: dict[int,int] = None,
-                     lower_bound: int = None) -> Dict:
+def three_x_plus_one(x: int) -> Dict:
 
-    steps = 0
-    maxval = x
-    visited = set()
+    k = 0
+    x_k = x
+    sup = x
+
+    if x == 1:
+        return {'verified': True, 'stoptime': 'infinity', 'supremum': 4}
 
     while True:
-        if x in visited:
-            return {'verified': False, 'maxval': maxval, 'steps': steps}
-        visited.add(x)
+        while (x_k % 2 == 0):
+            k += 1
+            x_k = x_k // 2
 
-        while (x % 2 == 0):
-            x = x // 2
-            steps += 1
+            if x_k <= x:
+                cycle_found = (x_k == x)
+                stoptime = 'infinity' if cycle_found else k
+                return {'verified': not cycle_found, 'stoptime': stoptime, 'supremum': sup}
 
-        if x == 1:
-            break
+        k += 1
+        x_k = 3*x_k + 1
+        sup = max(sup, x_k)
 
-        if lower_bound and x < lower_bound:
-            assert x in step_map.keys(), "Missing index!"
-            steps += step_map[x]
-            return {'verified': True, 'maxval': maxval, 'steps': steps}
-
-        steps += 1
-        x = 3*x+1
-        maxval = max(maxval, x)
-
-    return {'verified': True, 'maxval': maxval, 'steps': steps}
+    return
 
 
 def main():
@@ -87,14 +81,14 @@ def main():
     N = stop - start
     tstart = time()
     for i in range(start, stop, 2):
-        res = three_x_plus_one(i, stoptimes, i)
+        res = three_x_plus_one(i)
 
         if res['verified'] == False:
             print(f"x = {i}")
             raise RuntimeError("Counter found!")
 
-        stoptimes[i] = res['steps']
-        supremums[i] = res['maxval']
+        stoptimes[i] = res['stoptime']
+        supremums[i] = res['supremum']
     tend = time()
 
     if args.output:
