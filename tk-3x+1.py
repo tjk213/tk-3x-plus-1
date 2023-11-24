@@ -94,9 +94,10 @@ def main():
     start = args.start if args.start % 2 == 1 else args.start+1
 
     stoptimes = dict()
-    N = stop - start
+    vals_all =  list(range(start, stop))
+    vals_to_check = vals_all[0::2]
     tstart = time()
-    for i in range(start, stop, 2):
+    for i in vals_to_check:
         stoptimes[i] = three_x_plus_one(i)
 
         if i != 1 and stoptimes[i][0] == inf:
@@ -113,14 +114,20 @@ def main():
     if 1 in stoptimes.keys():
         del stoptimes[1]
 
-    avg_stopping_time = sum([x[0] for x in stoptimes.values()]) / N
+    n_total = len(vals_all)
+    n_checked = len(vals_to_check)
+
+    avg_stopping_time = sum([x[0] for x in stoptimes.values()]) / n_checked
     max_stopping_time = max([x[0] for x in stoptimes.values()])
-    checks_per_second = N / (tend - tstart)
+
+    checks_per_second  = n_checked / (tend - tstart)
+    indices_per_second = n_total / (tend - tstart)
 
     print(f'Avg Stopping Time: {avg_stopping_time:6,.2f}')
     print(f'Max Stopping Time: {max_stopping_time:6,.2f}')
     print(f'')
-    print(f'Checks Per Second: {checks_per_second:6,.0f}')
+    print(f' Checks Per Second: { checks_per_second:6,.0f}')
+    print(f'Indices Per Second: {indices_per_second:6,.0f}')
     print(f'')
     return
 
