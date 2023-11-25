@@ -73,6 +73,31 @@ def test_legarias_table1():
     assert (r7[0], round(r7[-1]/n7,-86)) == (1828, 1.11E88)
     assert (r8[0], round(r8[-1]/n8, +1)) == (2, 1.5)
 
+def print_metrics(results: Dict):
+    n_checked = len(results.keys())
+    stoptimes = [x[0] for x in results.values()]
+    stoptimes_excl_inf = np.array(list(filter(lambda x: x != inf, stoptimes)))
+
+
+    avg_stopping_time = sum(stoptimes_excl_inf) / n_checked
+    max_stopping_time = max(stoptimes_excl_inf)
+
+    percentiles = {
+        50: np.percentile(stoptimes_excl_inf, 50),
+        90: np.percentile(stoptimes_excl_inf, 90),
+        95: np.percentile(stoptimes_excl_inf, 95),
+        99: np.percentile(stoptimes_excl_inf, 99)
+    }
+
+
+    print(f'Median Stopping Time: {  percentiles[50]:6,.2f}')
+    print(f'   Avg Stopping Time: {avg_stopping_time:6,.2f}')
+    print(f'90th Percentile Time: {  percentiles[90]:6,.2f}')
+    print(f'95th Percentile Time: {  percentiles[95]:6,.2f}')
+    print(f'99th Percentile Time: {  percentiles[99]:6,.2f}')
+    print(f'   Max Stopping Time: {max_stopping_time:6,.2f}')
+
+
 def main():
     parser = ArgumentParser(description=DESCRIPTION,
                             formatter_class=lambda prog: RTHF(prog, max_help_position=80))
@@ -138,31 +163,12 @@ def main():
             for p in pairs:
                 print(f"{p[0]}, {p[1][0]}, {p[1][1]}, {p[1][2]}", file=f)
 
-    stoptimes = [x[0] for x in results.values()]
-    stoptimes_excl_inf = np.array(list(filter(lambda x: x != inf, stoptimes)))
+    print_metrics(results)
 
     n_total = len(vals_all)
     n_checked = len(vals_to_check)
-
-    avg_stopping_time = sum(stoptimes_excl_inf) / n_checked
-    max_stopping_time = max(stoptimes_excl_inf)
-
-    percentiles = {
-        50: np.percentile(stoptimes_excl_inf, 50),
-        90: np.percentile(stoptimes_excl_inf, 90),
-        95: np.percentile(stoptimes_excl_inf, 95),
-        99: np.percentile(stoptimes_excl_inf, 99)
-    }
-
     checks_per_second  = n_checked / (tend - tstart)
     indices_per_second = n_total / (tend - tstart)
-
-    print(f'Median Stopping Time: {  percentiles[50]:6,.2f}')
-    print(f'   Avg Stopping Time: {avg_stopping_time:6,.2f}')
-    print(f'90th Percentile Time: {  percentiles[90]:6,.2f}')
-    print(f'95th Percentile Time: {  percentiles[95]:6,.2f}')
-    print(f'99th Percentile Time: {  percentiles[99]:6,.2f}')
-    print(f'   Max Stopping Time: {max_stopping_time:6,.2f}')
 
     print(f'')
     print(f' Checks Per Second: { checks_per_second:10,.0f}')
