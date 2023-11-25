@@ -27,6 +27,7 @@ from time import time
 from typing import Dict
 
 import numpy as np
+import sympy as sp
 
 DESCRIPTION="Brute-force verify the Collatz Conjecture over the given data range."
 
@@ -163,10 +164,29 @@ def main():
             for p in pairs:
                 print(f"{p[0]}, {p[1][0]}, {p[1][1]}, {p[1][2]}", file=f)
 
-    print_metrics(results)
-
     n_total = len(vals_all)
     n_checked = len(vals_to_check)
+    print(f"Results - All (N={n_checked:,})")
+    print(f"----------------------------------------")
+    print_metrics(results)
+
+    results_prime = {k:v for k,v in results.items() if sp.isprime(k)}
+    results_comp  = {k:v for k,v in results.items() if not sp.isprime(k)}
+
+    n_prime = len(results_prime)
+    p_prime = n_prime / n_checked * 100
+    print(f"")
+    print(f"Results - Prime (N={n_prime:,}; {p_prime:.2f}%)")
+    print(f"----------------------------------------")
+    print_metrics(results_prime)
+
+    n_comp = len(results_comp)
+    p_comp = n_comp / n_checked * 100
+    print(f"")
+    print(f"Results - Composite (N={n_comp:,}; {p_comp:.2f}%)")
+    print(f"----------------------------------------")
+    print_metrics(results_comp)
+
     checks_per_second  = n_checked / (tend - tstart)
     indices_per_second = n_total / (tend - tstart)
 
