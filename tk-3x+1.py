@@ -74,6 +74,23 @@ def test_legarias_table1():
     assert (r7[0], round(r7[-1]/n7,-86)) == (1828, 1.11E88)
     assert (r8[0], round(r8[-1]/n8, +1)) == (2, 1.5)
 
+def test_garner():
+    assert three_x_plus_one(16384+  2)[0] == 1
+    assert three_x_plus_one(16384+  1)[0] == 2
+    assert three_x_plus_one(16384+  3)[0] == 4
+    assert three_x_plus_one(16384+ 11)[0] == 5
+    assert three_x_plus_one(16384+ 23)[0] == 5
+    assert three_x_plus_one(16384+  7)[0] == 7
+    assert three_x_plus_one(16384+ 15)[0] == 7
+    assert three_x_plus_one(16384+ 59)[0] == 7
+    assert three_x_plus_one(16384+ 39)[0] == 8
+    assert three_x_plus_one(16384+ 79)[0] == 8
+    assert three_x_plus_one(16384+ 95)[0] == 8
+    assert three_x_plus_one(16384+123)[0] == 8
+    assert three_x_plus_one(16384+175)[0] == 8
+    assert three_x_plus_one(16384+199)[0] == 8
+    assert three_x_plus_one(16384+219)[0] == 8
+
 def print_metrics(results: Dict):
     n_checked = len(results.keys())
     stoptimes = [x[0] for x in results.values()]
